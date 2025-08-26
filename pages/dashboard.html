@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EventManager</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            background: var(--background);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: var(--space-6);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-family: var(--font-secondary);
+            font-weight: 600;
+            font-size: var(--text-xl);
+            color: var(--primary);
+            margin-bottom: var(--space-8);
+            text-decoration: none;
+        }
+
+        .sidebar-logo i {
+            font-size: var(--text-2xl);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: var(--space-2);
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            color: var(--text);
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .sidebar-nav i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--space-6);
+        }
+
+        .dashboard-header {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .dashboard-title {
+            font-family: var(--font-secondary);
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: var(--space-2);
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-light);
+            font-size: var(--text-lg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--shadow-lg);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-4);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-xl);
+            color: var(--white);
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%);
+        }
+
+        .stat-icon.secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+        }
+
+        .stat-number {
+            font-family: var(--font-secondary);
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .content-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-family: var(--font-secondary);
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .events-table th,
+        .events-table td {
+            padding: var(--space-4);
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .events-table th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--text);
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .events-table td {
+            color: var(--text-light);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-badge.completed {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--neutral);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn-icon {
+            padding: var(--space-2);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+
+        .btn-icon.primary {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+
+        .btn-icon.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .btn-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-16);
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-6);
+            color: var(--neutral-light);
+        }
+
+        .empty-state h3 {
+            font-size: var(--text-2xl);
+            margin-bottom: var(--space-4);
+            color: var(--text);
+        }
+
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: var(--transition);
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-header {
+                position: relative;
+            }
+
+            .mobile-menu-btn {
+                position: absolute;
+                top: var(--space-6);
+                left: var(--space-6);
+                background: var(--primary);
+                color: var(--white);
+                border: none;
+                border-radius: var(--radius);
+                padding: var(--space-2);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a href="../index.html" class="sidebar-logo">
+                <i class="fas fa-calendar-alt"></i>
+                <span>EventManager</span>
+            </a>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="#overview" class="nav-item active" data-section="overview">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Overview</span>
+                    </a></li>
+                    <li><a href="#events" class="nav-item" data-section="events">
+                        <i class="fas fa-calendar"></i>
+                        <span>Events</span>
+                    </a></li>
+                    <li><a href="#registrations" class="nav-item" data-section="registrations">
+                        <i class="fas fa-users"></i>
+                        <span>Registrations</span>
+                    </a></li>
+                    <li><a href="#certificates" class="nav-item" data-section="certificates">
+                        <i class="fas fa-certificate"></i>
+                        <span>Certificates</span>
+                    </a></li>
+                    <li><a href="#analytics" class="nav-item" data-section="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a></li>
+                    <li><a href="#settings" class="nav-item" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Overview Section -->
+            <section id="overview-section" class="content-section active">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Dashboard Overview</h1>
+                    <p class="dashboard-subtitle">Welcome back! Here's what's happening with your events.</p>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon primary">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="total-events-stat">0</div>
+                        <div class="stat-label">Total Events</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon success">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="total-registrations-stat">0</div>
+                        <div class="stat-label">Total Registrations</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="total-certificates-stat">0</div>
+                        <div class="stat-label">Certificates Issued</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon secondary">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="active-events-stat">0</div>
+                        <div class="stat-label">Active Events</div>
+                    </div>
+                </div>
+
+                <!-- Recent Events -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Events</h2>
+                        <button class="btn btn-primary" onclick="Dashboard.showCreateEventModal()">
+                            <i class="fas fa-plus"></i>
+                            Create Event
+                        </button>
+                    </div>
+                    <div id="recent-events-container">
+                        <!-- Recent events will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Manage Events</h2>
+                    <button class="btn btn-primary" onclick="Dashboard.showCreateEventModal()">
+                        <i class="fas fa-plus"></i>
+                        Create Event
+                    </button>
+                </div>
+                <div id="events-container">
+                    <!-- Events table will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Registrations Section -->
+            <section id="registrations-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Event Registrations</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="Dashboard.exportRegistrations()">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+                <div id="registrations-container">
+                    <!-- Registrations table will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Certificates Section -->
+            <section id="certificates-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Certificate Management</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="Dashboard.showBulkCertificateModal()">
+                            <i class="fas fa-certificate"></i>
+                            Generate Certificates
+                        </button>
+                    </div>
+                </div>
+                <div id="certificates-container">
+                    <!-- Certificates will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Analytics & Reports</h2>
+                </div>
+                <div id="analytics-container">
+                    <div class="empty-state">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Analytics Coming Soon</h3>
+                        <p>Detailed analytics and reporting features will be available in the next update.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Settings</h2>
+                </div>
+                <div id="settings-container">
+                    <div class="empty-state">
+                        <i class="fas fa-cog"></i>
+                        <h3>Settings Coming Soon</h3>
+                        <p>Application settings and preferences will be available in the next update.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/certificates.js"></script>
+    <script src="../js/events.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
+

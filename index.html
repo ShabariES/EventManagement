@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventManager - Professional Event Management Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-calendar-alt"></i>
+                <span>EventManager</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#events" class="nav-link">Events</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="pages/dashboard.html" class="nav-link btn-primary">Dashboard</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Manage Events Like a <span class="gradient-text">Professional</span></h1>
+                <p class="hero-description">
+                    Create, manage, and track your events with our comprehensive platform. 
+                    Generate certificates, handle registrations, and analyze performance all in one place.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-large" onclick="window.location.href='pages/dashboard.html'">
+                        <i class="fas fa-rocket"></i>
+                        Get Started
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="scrollToSection('events')">
+                        <i class="fas fa-play"></i>
+                        View Events
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="total-events">0</span>
+                        <span class="stat-label">Events Created</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-registrations">0</span>
+                        <span class="stat-label">Registrations</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-certificates">0</span>
+                        <span class="stat-label">Certificates Issued</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <div class="card-header">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Event Dashboard</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="event-item">
+                            <div class="event-dot active"></div>
+                            <span>Tech Conference 2025</span>
+                            <span class="event-status">Active</span>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-dot pending"></div>
+                            <span>Marketing Workshop</span>
+                            <span class="event-status">Pending</span>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-dot completed"></div>
+                            <span>Design Meetup</span>
+                            <span class="event-status">Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-description">Everything you need to manage successful events</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <h3 class="feature-title">Event Creation</h3>
+                    <p class="feature-description">Create and customize events with detailed information, scheduling, and capacity management.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Registration Management</h3>
+                    <p class="feature-description">Handle attendee registrations with customizable forms and automated confirmations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="feature-title">E-Certificate Generation</h3>
+                    <p class="feature-description">Automatically generate and distribute professional certificates to event attendees.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Analytics & Reports</h3>
+                    <p class="feature-description">Track event performance with detailed analytics and comprehensive reporting.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Mobile Responsive</h3>
+                    <p class="feature-description">Access your event management platform from any device, anywhere, anytime.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Secure & Reliable</h3>
+                    <p class="feature-description">Your data is protected with enterprise-grade security and reliable performance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="events">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Upcoming Events</h2>
+                <p class="section-description">Discover and register for exciting events</p>
+            </div>
+            <div class="events-container">
+                <div class="events-filters">
+                    <button class="filter-btn active" data-filter="all">All Events</button>
+                    <button class="filter-btn" data-filter="conference">Conferences</button>
+                    <button class="filter-btn" data-filter="workshop">Workshops</button>
+                    <button class="filter-btn" data-filter="seminar">Seminars</button>
+                </div>
+                <div class="events-grid" id="events-grid">
+                    <!-- Events will be dynamically loaded here -->
+                </div>
+                <div class="events-empty" id="events-empty" style="display: none;">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>No Events Found</h3>
+                    <p>There are no events matching your criteria. Check back later or create a new event.</p>
+                    <button class="btn btn-primary" onclick="window.location.href='pages/dashboard.html'">Create Event</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">About EventManager</h2>
+                    <p class="about-description">
+                        EventManager is a comprehensive event management platform designed to simplify the process of 
+                        creating, managing, and tracking events. Whether you're organizing a small workshop or a large 
+                        conference, our platform provides all the tools you need to ensure success.
+                    </p>
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Easy event creation and management</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Automated registration handling</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Professional certificate generation</span>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Comprehensive analytics and reporting</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="about-card">
+                        <div class="card-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3>Professional Grade</h3>
+                        <p>Built for professionals who demand excellence in event management.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>EventManager</span>
+                    </div>
+                    <p class="footer-description">
+                        Professional event management platform for modern organizers.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="pages/dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Event Creation</a></li>
+                        <li><a href="#">Registration</a></li>
+                        <li><a href="#">Certificates</a></li>
+                        <li><a href="#">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Contact</h4>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-envelope"></i> info@eventmanager.com</p>
+                        <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EventManager. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
