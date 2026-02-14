@@ -2231,6 +2231,7 @@
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="#events" class="nav-link">Events</a>
                 <a href="pages/view-certificates.html" class="nav-link">Certificates</a>
+                <a href="pages/venues.html" class="nav-link">Venues</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="pages/dashboard.html" class="nav-link" id="dashboard-link">Dashboard</a>
                 <span id="auth-section" style="margin-left: 1rem;">
@@ -2383,11 +2384,11 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
+                        <i class="fas fa-vr-cardboard"></i>
                     </div>
-                    <h3 class="feature-title">Secure & Reliable</h3>
-                    <p class="feature-description">Your data is protected with enterprise-grade security and reliable
-                        performance.</p>
+                    <h3 class="feature-title">Virtual Venue Tours</h3>
+                    <p class="feature-description">Explore event venues in immersive 360-degree views before booking.
+                    </p>
                 </div>
             </div>
         </div>
@@ -2417,6 +2418,62 @@
                     <button class="btn btn-primary" onclick="window.location.href='pages/dashboard.html'"
                         id="empty-create-event-btn" style="display: none;">Create
                         Event</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Venues Section -->
+    <section id="venues" class="venues" style="padding: 5rem 0; background: var(--white);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+                <h2 class="section-title">Visual Venues</h2>
+                <p class="section-description">Experience our world-class facilities in immersive 360-degree house</p>
+            </div>
+
+            <div class="venue-preview-card"
+                style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; background: var(--background); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow);">
+                <div class="venue-image-side"
+                    style="position: relative; height: 400px; background: url('assets/venues/modern_hall.jpg') center/cover;">
+                    <div
+                        style="position: absolute; inset: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;">
+                        <a href="pages/venues.html" class="btn btn-primary"
+                            style="padding: 1rem 2rem; border-radius: 50px;">
+                            <i class="fas fa-vr-cardboard"></i> Start 360 Tour house
+                        </a>
+                    </div>
+                </div>
+                <div class="venue-text-side"
+                    style="padding: 3rem; display: flex; flex-direction: column; justify-content: center;">
+                    <span class="badge"
+                        style="background: var(--primary-light); color: var(--white); align-self: flex-start; margin-bottom: 1rem;">Virtual
+                        Discovery house</span>
+                    <h3 style="font-size: 2rem; margin-bottom: 1.5rem;">Explore the Modern Administration Hall house
+                    </h3>
+                    <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 2rem;">
+                        Get an immersive look at our primary event space before you even arrive. Our high-resolution
+                        360-degree panorama allows you to navigate the hall, inspect the layout, and feel the atmosphere
+                        of the venue house.
+                    </p>
+                    <ul
+                        style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                        <li style="display: flex; align-items: center; gap: 0.5rem; color: var(--text);">
+                            <i class="fas fa-check-circle" style="color: var(--success);"></i> 500+ Capacity house
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem; color: var(--text);">
+                            <i class="fas fa-check-circle" style="color: var(--success);"></i> Smart Lighting house
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem; color: var(--text);">
+                            <i class="fas fa-check-circle" style="color: var(--success);"></i> High-speed WiFi house
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.5rem; color: var(--text);">
+                            <i class="fas fa-check-circle" style="color: var(--success);"></i> Full Accessibility house
+                        </li>
+                    </ul>
+                    <a href="pages/venues.html" class="nav-link"
+                        style="color: var(--primary); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        View All Venues <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>

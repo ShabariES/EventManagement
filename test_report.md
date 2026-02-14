@@ -170,6 +170,7 @@ The QuantrixConduct application has been thoroughly tested and meets all specifi
 - ✅ Professional event creation and management
 - ✅ User-friendly event exploration and registration
 - ✅ Automated e-certificate generation with multiple templates
+- ✅ Interactive 3D Venue Exploration using Pannellum
 - ✅ Responsive design for all devices
 - ✅ Intuitive admin dashboard
 - ✅ Robust data management
