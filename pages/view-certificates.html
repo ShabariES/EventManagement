@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Certificates - QuantrixConduct</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reusing variables from main.css */
+        :root {
+            --primary: #3225eb;
+        }
+
+        body {
+            background-color: #f9fafb;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            padding-top: 100px;
+            /* Navbar height + spacing */
+            padding-bottom: 2rem;
+        }
+
+        .certificate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .certificate-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cert-preview {
+            height: 200px;
+            background: linear-gradient(135deg, #3225eb 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+
+        .cert-preview i {
+            font-size: 4rem;
+            opacity: 0.8;
+        }
+
+        .cert-info {
+            padding: 1.5rem;
+        }
+
+        .cert-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .cert-event {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .cert-date {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .download-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span style="font-weight:600; font-size:1.2rem; color:var(--primary);">QuantrixConduct</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../index.html#events" class="nav-link">Events</a>
+                <a href="view-certificates.html" class="nav-link" style="color:#3225eb;">Certificates</a>
+                <a href="dashboard.html" class="nav-link" id="dashboard-link" style="display:none;">Dashboard</a>
+            </div>
+            <div class="nav-auth">
+                <button id="logout-btn" class="btn btn-secondary" onclick="auth.logout()"
+                    style="display:none;">Logout</button>
+                <a href="login.html" id="login-btn" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content container">
+        <div class="section-header">
+            <h1 class="section-title">My Certificates</h1>
+            <p class="section-subtitle">View and download your earned certificates</p>
+        </div>
+
+        <div id="loading" style="text-align:center; padding:3rem;">
+            <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i>
+            <p style="margin-top:1rem;">Loading certificates...</p>
+        </div>
+
+        <div id="auth-warning"
+            style="display:none; text-align:center; padding:3rem; background:white; border-radius:1rem; margin-top:2rem;">
+            <i class="fas fa-lock fa-3x" style="color:#9ca3af; margin-bottom:1rem;"></i>
+            <h3>Please Log In</h3>
+            <p style="color:#6b7280; margin-bottom:1.5rem;">You need to be logged in to view your certificates.</p>
+            <a href="login.html" class="btn btn-primary" style="display:inline-block; max-width:200px;">Login Now</a>
+        </div>
+
+        <div id="certificates-container" class="certificate-grid" style="display:none;">
+            <!-- Certificates will be injected here -->
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display:none;">
+            <i class="fas fa-award fa-3x" style="color:#e5e7eb; margin-bottom:1rem;"></i>
+            <h3>No Certificates Yet</h3>
+            <p>Participate in events to earn certificates!</p>
+            <a href="../index.html#events" class="btn btn-secondary"
+                style="margin-top:1rem; display:inline-block;">Browse Events</a>
+        </div>
+
+        <!-- Pending Certificates Section -->
+        <div id="pending-container"
+            style="display:none; margin-top: 4rem; border-top: 1px solid #e5e7eb; padding-top: 2rem;">
+            <h2 style="font-size: 1.5rem; color: #111827; margin-bottom: 1.5rem;">My Registered Events</h2>
+            <div id="registrations-grid" class="certificate-grid">
+                <!-- Registrations will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Navigation Auth State
+            const user = auth.getCurrentUser();
+            const loginBtn = document.getElementById('login-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const dashboardLink = document.getElementById('dashboard-link');
+
+            if (user) {
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                if (user.role === 'admin') {
+                    dashboardLink.style.display = 'block';
+                }
+                loadCertificates();
+            } else {
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('auth-warning').style.display = 'block';
+            }
+        });
+
+        async function loadCertificates() {
+            try {
+                const token = auth.getToken();
+
+                // Fetch both certificates and registrations
+                const [certificates, registrations] = await Promise.all([
+                    API.certificates.getMyCertificates(token).catch(e => []),
+                    API.registrations.getMyRegistrations(token).catch(e => [])
+                ]);
+
+                document.getElementById('loading').style.display = 'none';
+
+                // Render Certificates
+                const certContainer = document.getElementById('certificates-container');
+                const emptyState = document.getElementById('empty-state');
+
+                if (certificates && certificates.length > 0) {
+                    certContainer.style.display = 'grid';
+                    emptyState.style.display = 'none';
+
+                    certContainer.innerHTML = certificates.map(cert => `
+                        <div class="certificate-card">
+                            <div class="cert-preview">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="cert-info">
+                                <h3 class="cert-title">${cert.event ? cert.event.title : 'Unknown Event'}</h3>
+                                <div class="cert-event">
+                                    <i class="fas fa-calendar-alt"></i> 
+                                    ${new Date(cert.createdAt).toLocaleDateString()}
+                                </div>
+                                <div class="cert-date">
+                                    <span>ID: ${cert._id.substring(0, 8)}...</span>
+                                </div>
+                                ${cert.adminReport ? `
+                                <div style="margin-top: 1rem; padding: 0.75rem; background: #ecfdf5; border-left: 3px solid #10b981; border-radius: 4px; font-size: 0.85rem;">
+                                    <strong><i class="fas fa-comment-alt"></i> Performance Report:</strong>
+                                    <p style="margin-top: 5px; color: #065f46;">${Utils.sanitizeHtml(cert.adminReport)}</p>
+                                </div>
+                                ` : ''}
+                                <button onclick="downloadCertificate('${cert._id}')" class="btn btn-primary download-btn">
+                                    <i class="fas fa-eye"></i> View / Download
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    certContainer.style.display = 'none';
+                    // Only show empty state if no registrations either
+                    if (!registrations || registrations.length === 0) {
+                        emptyState.style.display = 'block';
+                    }
+                }
+
+                // Render Registrations (Pending Certificates)
+                const pendingContainer = document.getElementById('pending-container');
+                const regGrid = document.getElementById('registrations-grid');
+
+                // Filter registrations that DON'T have a certificate yet
+                // We need to check if the registration ID or Event ID matches any certificate
+                // The certificate object usually contains registrationId or eventId
+
+                // Optimized check: unique event IDs in certificates
+                const certifiedEventIds = new Set(certificates.map(c => c.event._id));
+                const pendingRegistrations = registrations.filter(r => !certifiedEventIds.has(r.event._id));
+
+                if (pendingRegistrations.length > 0) {
+                    pendingContainer.style.display = 'block';
+                    regGrid.innerHTML = pendingRegistrations.map(reg => `
+                        <div class="certificate-card" style="opacity: 0.8;">
+                             <div class="cert-preview" style="background: linear-gradient(135deg, #9ca3af 0%, #d1d5db 100%);">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <div class="cert-info">
+                                <h3 class="cert-title">${reg.event.title}</h3>
+                                <div class="cert-event">
+                                    <i class="fas fa-calendar-alt"></i> 
+                                    ${new Date(reg.event.date).toLocaleDateString()}
+                                </div>
+                                <div class="cert-date" style="color: #d97706;">
+                                    <i class="fas fa-clock"></i>
+                                    <span style="margin-left:5px">Certificate Pending</span>
+                                </div>
+                                ${reg.adminReport ? `
+                                <div style="margin-top: 1rem; padding: 0.75rem; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 0.85rem;">
+                                    <strong><i class="fas fa-comment-alt"></i> Admin Feedback:</strong>
+                                    <p style="margin-top: 5px; color: #92400e;">${Utils.sanitizeHtml(reg.adminReport)}</p>
+                                </div>
+                                ` : ''}
+                                <button disabled class="btn btn-secondary download-btn" style="cursor: not-allowed; opacity: 0.6;">
+                                    Not Yet Issued
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('empty-state').innerHTML = `<p style="color:red">Failed to load data. Please refresh.</p>`;
+                document.getElementById('empty-state').style.display = 'block';
+            }
+        }
+
+        async function downloadCertificate(id) {
+            // Open the certificate viewer in a new tab
+            window.open(`view_certificate.html?id=${id}`, '_blank');
+        }
+    </script>
+</body>
+
+</html>

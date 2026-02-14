@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Certificate - QuantrixConduct</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700;ital@1&family=Great+Vibes&family=Cinzel:wght@400;700&family=Montserrat:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            background: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 2rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .certificate-container {
+            background-color: #fff;
+            background-image: url('../assets/images/default_certificate.png');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 1.414;
+            /* Landscape A4 */
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            color: #1a1a1a;
+        }
+
+        /* 
+           Layout Strategy:
+           Name centered vertically around 44% (visually optical center for this template style).
+        */
+
+        .recipient-name {
+            position: absolute;
+            top: 46%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            font-family: 'Great Vibes', cursive;
+            /* Elegant Script */
+            font-size: clamp(2.5rem, 4.2vw, 4.5rem);
+            /* Reduced responsive font size */
+            color: #d4af37;
+            /* Gold-ish */
+            text-align: center;
+            z-index: 10;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        .content-block {
+            position: absolute;
+            top: 58%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 80%;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            /* Clean readable font */
+            color: #333;
+        }
+
+        .participation-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .event-name {
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: #000;
+            margin: 0;
+            font-family: 'Cinzel', serif;
+            /* Valid formal font */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #d4af37;
+            display: inline-block;
+            padding-bottom: 5px;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .footer-block {
+            position: absolute;
+            bottom: 16%;
+            width: 100%;
+            padding: 0 15%;
+            /* Keep content within 70% width */
+            display: flex;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        .date-section,
+        .signature-section {
+            text-align: center;
+            width: 200px;
+        }
+
+        .date-display {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .signature-display {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: #000;
+            margin-bottom: 0;
+        }
+
+        .line {
+            width: 100%;
+            height: 1px;
+            background-color: #333;
+            margin-bottom: 5px;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .cert-id {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 0.7rem;
+            color: #888;
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .btn-print {
+            padding: 10px 20px;
+            background: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .certificate-container {
+                box-shadow: none;
+                width: 100%;
+                height: 100vh;
+                /* Use full height */
+                max-width: none;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+                page-break-inside: avoid;
+                margin: 0;
+                border: none;
+            }
+
+            .controls {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="controls">
+        <button class="btn-print" onclick="window.print()">
+            <i class="fas fa-print"></i> Print / Save as PDF
+        </button>
+    </div>
+
+    <div class="certificate-container" id="certificate-container">
+        <!-- Dynamic Content -->
+
+        <div class="recipient-name" id="userName">Loading...</div>
+
+        <div class="content-block">
+            <div class="participation-text">For outstanding participation in</div>
+            <div class="event-name" id="eventName">Event Name</div>
+        </div>
+
+        <div class="footer-block">
+            <div class="date-section">
+                <div class="date-display" id="eventDate">Date</div>
+                <div class="line"></div>
+                <div class="label">Date</div>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-display">Madheswaran</div>
+                <div class="line"></div>
+                <div class="label">Principal</div>
+            </div>
+        </div>
+
+        <div class="cert-id" id="certId">ID: </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const certId = urlParams.get('id');
+
+            if (!certId) {
+                alert('No certificate ID provided');
+                return;
+            }
+
+            try {
+                const token = auth.getToken();
+                if (!token) {
+                    window.location.href = '../pages/login.html';
+                    return;
+                }
+
+                const cert = await API.certificates.getById(certId, token);
+
+                if (!cert) {
+                    alert('Certificate not found');
+                    return;
+                }
+
+                // Populate Fields
+                document.getElementById('userName').textContent = cert.user ? cert.user.name : 'Unknown User';
+                document.getElementById('eventName').textContent = cert.event ? cert.event.title : 'Unknown Event';
+
+                // Format Date
+                let dateDisplay = 'Date not specified';
+                const rawDate = cert.event && cert.event.date ? cert.event.date : cert.createdAt;
+
+                if (rawDate) {
+                    const dateObj = new Date(rawDate);
+                    if (!isNaN(dateObj.getTime())) {
+                        dateDisplay = dateObj.toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        });
+                    } else {
+                        // If rawDate is string like '2025-10-15' but Date() failed (rare), display as is
+                        dateDisplay = rawDate;
+                    }
+                }
+                document.getElementById('eventDate').textContent = dateDisplay;
+
+                document.getElementById('certId').textContent = `ID: ${cert._id}`;
+
+                // Handle Template Image
+                const container = document.getElementById('certificate-container');
+                const templateName = cert.templateName ? cert.templateName.toLowerCase() : 'professional';
+
+                if (templateName === 'orange') {
+                    container.style.backgroundImage = 'url(../assets/images/orange_template.png)';
+                    // Optional: Custom alignment if orange template is different
+                    // document.querySelector('.recipient-name').style.top = '48%';
+                } else if (templateName === 'blue') {
+                    container.style.backgroundImage = 'url(../assets/images/blue_template.png)';
+                } else if (templateName !== 'professional' && templateName !== 'default') {
+                    try {
+                        const customTemplates = await API.templates.getAll(token);
+                        const template = customTemplates.find(t => t.name.toLowerCase() === templateName);
+
+                        if (template && template.image) {
+                            container.style.backgroundImage = `url(${template.image})`;
+                        }
+                    } catch (e) {
+                        console.error('Error loading custom template', e);
+                    }
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert('Error loading certificate data');
+            }
+        });
+    </script>
+</body>
+
+</html>

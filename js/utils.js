@@ -16,6 +16,7 @@ const Storage = {
     // Set data to localStorage
     set(key, value) {
         try {
+            console.log(`Setting data for key "${key}":`, value);
             localStorage.setItem(key, JSON.stringify(value));
             return true;
         } catch (error) {

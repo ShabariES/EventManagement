@@ -1,4 +1,4 @@
-// Certificate Generation System for EventManager
+// Certificate Generation System for QuantrixConduct house
 
 // Certificate Templates
 const CertificateTemplates = {
@@ -31,6 +31,18 @@ const CertificateTemplates = {
         borderColor: '#E5E7EB',
         textColor: '#111827',
         lightTextColor: '#6B7280'
+    },
+    freeStudent: {
+        name: 'Free Student',
+        background: '#E0F2FE',
+        gradientStart: '#E0F2FE',
+        gradientEnd: '#BAE6FD',
+        primaryColor: '#1D4ED8',
+        secondaryColor: '#2563EB',
+        accentColor: '#F59E0B',
+        borderColor: '#93C5FD',
+        textColor: '#111827',
+        lightTextColor: '#4B5563'
     }
 };
 
@@ -40,23 +52,18 @@ class CertificateGenerator {
         this.loadJsPDF();
     }
 
-    // Load jsPDF library
     async loadJsPDF() {
         if (typeof window.jsPDF === 'undefined') {
             const script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-            script.onload = () => {
-                console.log('jsPDF loaded successfully');
-            };
+            script.onload = () => console.log('jsPDF loaded successfully');
             document.head.appendChild(script);
         }
     }
 
-    // Generate certificate
     async generateCertificate(data, template = 'professional') {
         return new Promise((resolve, reject) => {
             try {
-                // Wait for jsPDF to load
                 const checkJsPDF = () => {
                     if (typeof window.jsPDF !== 'undefined') {
                         this.createCertificate(data, template, resolve, reject);
@@ -71,51 +78,41 @@ class CertificateGenerator {
         });
     }
 
-    // Create certificate PDF
     createCertificate(data, templateName, resolve, reject) {
         try {
-            const { jsPDF } = window.jsPDF;
+            const { jsPDF } = window.jspdf;
             const template = CertificateTemplates[templateName];
-            
-            // Create new PDF document (landscape A4)
-            const doc = new jsPDF({
-                orientation: 'landscape',
-                unit: 'mm',
-                format: 'a4'
-            });
 
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
 
-            // Set background
-            doc.setFillColor(template.background);
-            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+            // Background
+            this.addBackground(doc, template, pageWidth, pageHeight);
 
-            // Add decorative border
+            // Border
             this.addBorder(doc, template, pageWidth, pageHeight);
 
-            // Add header
+            // Header & Ribbon
             this.addHeader(doc, template, pageWidth);
+            if (templateName === 'freeStudent') this.addRibbon(doc, template, pageWidth, pageHeight);
 
-            // Add title
+            // Title
             this.addTitle(doc, template, pageWidth, pageHeight);
 
-            // Add recipient name
+            // Recipient
             this.addRecipientName(doc, template, data.attendeeName, pageWidth, pageHeight);
 
-            // Add event details
+            // Event Details
             this.addEventDetails(doc, template, data, pageWidth, pageHeight);
 
-            // Add footer
+            // Footer & Certificate ID
             this.addFooter(doc, template, data, pageWidth, pageHeight);
-
-            // Add certificate ID
             this.addCertificateId(doc, template, data.certificateId, pageWidth, pageHeight);
 
-            // Generate blob and resolve
             const pdfBlob = doc.output('blob');
             const pdfUrl = URL.createObjectURL(pdfBlob);
-            
+
             resolve({
                 blob: pdfBlob,
                 url: pdfUrl,
@@ -127,52 +124,64 @@ class CertificateGenerator {
         }
     }
 
-    // Add decorative border
+    addBackground(doc, template, pageWidth, pageHeight) {
+        if (template.gradientStart && template.gradientEnd) {
+            // For simplicity, just fill with the start color (jsPDF gradients require plugins)
+            doc.setFillColor(template.gradientStart);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+        } else {
+            doc.setFillColor(template.background);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+        }
+    }
+
     addBorder(doc, template, pageWidth, pageHeight) {
-        // Outer border
         doc.setDrawColor(template.primaryColor);
         doc.setLineWidth(2);
         doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
 
-        // Inner border
         doc.setDrawColor(template.borderColor);
         doc.setLineWidth(0.5);
         doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
 
-        // Corner decorations
         const cornerSize = 15;
         doc.setFillColor(template.accentColor);
-        
-        // Top left corner
         doc.triangle(15, 15, 15 + cornerSize, 15, 15, 15 + cornerSize, 'F');
-        
-        // Top right corner
         doc.triangle(pageWidth - 15, 15, pageWidth - 15 - cornerSize, 15, pageWidth - 15, 15 + cornerSize, 'F');
-        
-        // Bottom left corner
         doc.triangle(15, pageHeight - 15, 15 + cornerSize, pageHeight - 15, 15, pageHeight - 15 - cornerSize, 'F');
-        
-        // Bottom right corner
         doc.triangle(pageWidth - 15, pageHeight - 15, pageWidth - 15 - cornerSize, pageHeight - 15, pageWidth - 15, pageHeight - 15 - cornerSize, 'F');
     }
 
-    // Add header
+    addRibbon(doc, template, pageWidth) {
+        const ribbonWidth = 200;
+        const ribbonHeight = 20;
+        const x = (pageWidth - ribbonWidth) / 2;
+        const y = 35;
+
+        doc.setFillColor(template.accentColor);
+        doc.roundedRect(x, y, ribbonWidth, ribbonHeight, 3, 3, 'F');
+
+        doc.setFontSize(14);
+        doc.setTextColor('#FFFFFF');
+        doc.setFont('helvetica', 'bold');
+        const ribbonText = 'Certificate of Achievement';
+        const textWidth = doc.getTextWidth(ribbonText);
+        doc.text(ribbonText, pageWidth / 2 - textWidth / 2, y + 14);
+    }
+
     addHeader(doc, template, pageWidth) {
         doc.setFontSize(12);
         doc.setTextColor(template.lightTextColor);
         doc.setFont('helvetica', 'normal');
-        
-        const headerText = 'EventManager Certificate';
+        const headerText = 'QuantrixConduct Certificate';
         const textWidth = doc.getTextWidth(headerText);
         doc.text(headerText, (pageWidth - textWidth) / 2, 25);
     }
 
-    // Add title
     addTitle(doc, template, pageWidth, pageHeight) {
         doc.setFontSize(36);
         doc.setTextColor(template.primaryColor);
         doc.setFont('helvetica', 'bold');
-        
         const titleText = 'CERTIFICATE';
         const textWidth = doc.getTextWidth(titleText);
         doc.text(titleText, (pageWidth - textWidth) / 2, 50);
@@ -180,43 +189,35 @@ class CertificateGenerator {
         doc.setFontSize(24);
         doc.setTextColor(template.secondaryColor);
         doc.setFont('helvetica', 'normal');
-        
         const subtitleText = 'OF ACHIEVEMENT';
         const subtitleWidth = doc.getTextWidth(subtitleText);
         doc.text(subtitleText, (pageWidth - subtitleWidth) / 2, 65);
     }
 
-    // Add recipient name
-    addRecipientName(doc, template, name, pageWidth, pageHeight) {
+    addRecipientName(doc, template, name, pageWidth) {
         doc.setFontSize(14);
         doc.setTextColor(template.textColor);
         doc.setFont('helvetica', 'normal');
-        
         const presentedText = 'This certificate is proudly presented to';
         const presentedWidth = doc.getTextWidth(presentedText);
         doc.text(presentedText, (pageWidth - presentedWidth) / 2, 85);
 
-        // Name with underline
         doc.setFontSize(28);
         doc.setTextColor(template.primaryColor);
         doc.setFont('helvetica', 'bold');
-        
         const nameWidth = doc.getTextWidth(name);
         const nameX = (pageWidth - nameWidth) / 2;
         doc.text(name, nameX, 105);
-        
-        // Underline
+
         doc.setDrawColor(template.accentColor);
         doc.setLineWidth(1);
         doc.line(nameX - 10, 110, nameX + nameWidth + 10, 110);
     }
 
-    // Add event details
-    addEventDetails(doc, template, data, pageWidth, pageHeight) {
+    addEventDetails(doc, template, data, pageWidth) {
         doc.setFontSize(16);
         doc.setTextColor(template.textColor);
         doc.setFont('helvetica', 'normal');
-        
         const completionText = 'for successfully completing';
         const completionWidth = doc.getTextWidth(completionText);
         doc.text(completionText, (pageWidth - completionWidth) / 2, 125);
@@ -224,29 +225,22 @@ class CertificateGenerator {
         doc.setFontSize(20);
         doc.setTextColor(template.secondaryColor);
         doc.setFont('helvetica', 'bold');
-        
         const eventTitle = data.eventTitle;
         const eventWidth = doc.getTextWidth(eventTitle);
         doc.text(eventTitle, (pageWidth - eventWidth) / 2, 140);
 
-        // Event details
         doc.setFontSize(12);
         doc.setTextColor(template.lightTextColor);
         doc.setFont('helvetica', 'normal');
-        
         const eventDate = Utils.formatDate(data.eventDate);
         const eventLocation = data.eventLocation;
-        
         const detailsText = `Held on ${eventDate} at ${eventLocation}`;
         const detailsWidth = doc.getTextWidth(detailsText);
         doc.text(detailsText, (pageWidth - detailsWidth) / 2, 155);
     }
 
-    // Add footer
     addFooter(doc, template, data, pageWidth, pageHeight) {
         const footerY = pageHeight - 40;
-        
-        // Signature line
         doc.setDrawColor(template.borderColor);
         doc.setLineWidth(0.5);
         doc.line(50, footerY, 120, footerY);
@@ -255,94 +249,79 @@ class CertificateGenerator {
         doc.setFontSize(10);
         doc.setTextColor(template.lightTextColor);
         doc.setFont('helvetica', 'normal');
-        
-        // Organizer signature
-        const organizerText = 'Event Organizer';
-        doc.text(organizerText, 85 - doc.getTextWidth(organizerText) / 2, footerY + 8);
-        
-        // Date
-        const dateText = `Date: ${Utils.formatDate(data.issueDate)}`;
-        doc.text(dateText, pageWidth - 85 - doc.getTextWidth(dateText) / 2, footerY + 8);
+        doc.text('Event Organizer', 85 - doc.getTextWidth('Event Organizer') / 2, footerY + 8);
+        doc.text(`Date: ${Utils.formatDate(data.issueDate)}`, pageWidth - 85 - doc.getTextWidth(`Date: ${Utils.formatDate(data.issueDate)}`) / 2, footerY + 8);
 
-        // EventManager branding
         doc.setFontSize(8);
         doc.setTextColor(template.primaryColor);
-        const brandingText = 'Generated by EventManager';
+        const brandingText = 'Generated by QuantrixConduct';
         const brandingWidth = doc.getTextWidth(brandingText);
         doc.text(brandingText, (pageWidth - brandingWidth) / 2, pageHeight - 15);
     }
 
-    // Add certificate ID
     addCertificateId(doc, template, certificateId, pageWidth, pageHeight) {
         doc.setFontSize(8);
         doc.setTextColor(template.lightTextColor);
         doc.setFont('helvetica', 'normal');
-        
-        const idText = `Certificate ID: ${certificateId}`;
-        doc.text(idText, 20, pageHeight - 5);
+        doc.text(`Certificate ID: ${certificateId}`, 20, pageHeight - 5);
     }
 
-    // Generate bulk certificates
     async generateBulkCertificates(eventId, templateName = 'professional') {
         try {
-            const events = Storage.get('events', []);
-            const registrations = Storage.get('registrations', []);
-            const certificates = Storage.get('certificates', []);
+            const token = auth.getToken();
+            if (!token) throw new Error('Authentication required');
 
-            const event = events.find(e => e.id === eventId);
-            if (!event) {
-                throw new Error('Event not found');
-            }
+            // 1. Fetch Event
+            const event = await API.events.getById(eventId);
+            if (!event) throw new Error('Event not found');
 
-            const eventRegistrations = registrations.filter(r => r.eventId === eventId);
+            // 2. Fetch Registrations
+            const registrations = await API.registrations.getByEvent(eventId, token);
+
             const generatedCertificates = [];
 
-            for (const registration of eventRegistrations) {
-                // Check if certificate already exists
-                const existingCert = certificates.find(c => 
-                    c.eventId === eventId && c.attendeeId === registration.id
-                );
-
-                if (existingCert) {
-                    generatedCertificates.push(existingCert);
+            // 3. Process each registration
+            for (const registration of registrations) {
+                // Skip if already issued
+                if (registration.certificateIssued) {
                     continue;
                 }
 
-                // Generate new certificate
+                // Prepare data for PDF generation
                 const certificateData = {
-                    certificateId: Utils.generateId(),
-                    attendeeName: registration.name,
+                    certificateId: 'PENDING', // Will be assigned by backend
+                    attendeeName: registration.user ? registration.user.name : 'Unknown',
                     eventTitle: event.title,
                     eventDate: event.date,
                     eventLocation: event.location,
                     issueDate: new Date().toISOString().split('T')[0]
                 };
 
+                // Generate PDF (Client-side)
                 const certificate = await this.generateCertificate(certificateData, templateName);
-                
-                // Save certificate record
-                const certificateRecord = {
-                    id: certificateData.certificateId,
-                    eventId: eventId,
-                    attendeeId: registration.id,
-                    attendeeName: registration.name,
-                    eventTitle: event.title,
-                    issueDate: certificateData.issueDate,
+
+                // 4. Save to Backend
+                // We send the blob URL (note: this URL is local to the browser session)
+                // In a real app we'd upload the file (blob) to a server/S3. 
+                // Here we just save the local URL reference or base64. 
+                // For this demo, sending the local URL is fine for immediate download, 
+                // but won't persist across sessions well. 
+                // However, the backend is the source of truth for "Issued" status.
+
+                const response = await API.certificates.generate({
+                    registrationId: registration._id,
                     templateName: templateName,
-                    certificateUrl: certificate.url,
-                    filename: certificate.filename
+                    certificateUrl: certificate.url
+                }, token);
+
+                const certificateRecord = {
+                    ...response,
+                    filename: certificate.filename,
+                    url: certificate.url // Keep local URL for immediate use
                 };
 
-                certificates.push(certificateRecord);
                 generatedCertificates.push(certificateRecord);
-
-                // Update registration
-                registration.certificateIssued = true;
             }
-
-            // Save updated data
-            Storage.set('certificates', certificates);
-            Storage.set('registrations', registrations);
 
             return generatedCertificates;
 
@@ -352,7 +331,6 @@ class CertificateGenerator {
         }
     }
 
-    // Download certificate
     downloadCertificate(certificateUrl, filename) {
         const link = document.createElement('a');
         link.href = certificateUrl;
@@ -362,11 +340,8 @@ class CertificateGenerator {
         document.body.removeChild(link);
     }
 
-    // Email certificate (simulation)
     async emailCertificate(certificateRecord, recipientEmail) {
-        // In a real application, this would send the certificate via email
-        // For now, we'll simulate the process
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             setTimeout(() => {
                 console.log(`Certificate emailed to ${recipientEmail}`);
                 Toast.success(`Certificate sent to ${recipientEmail}`);
@@ -375,40 +350,27 @@ class CertificateGenerator {
         });
     }
 
-    // Get certificate statistics
     getCertificateStats() {
         const certificates = Storage.get('certificates', []);
         const events = Storage.get('events', []);
-        
+
         const stats = {
             totalCertificates: certificates.length,
             certificatesByEvent: {},
             certificatesByTemplate: {},
-            recentCertificates: certificates
-                .sort((a, b) => new Date(b.issueDate) - new Date(a.issueDate))
-                .slice(0, 10)
+            recentCertificates: certificates.sort((a, b) => new Date(b.issueDate) - new Date(a.issueDate)).slice(0, 10)
         };
 
-        // Group by event
         certificates.forEach(cert => {
             if (!stats.certificatesByEvent[cert.eventId]) {
                 const event = events.find(e => e.id === cert.eventId);
-                stats.certificatesByEvent[cert.eventId] = {
-                    eventTitle: event ? event.title : 'Unknown Event',
-                    count: 0,
-                    certificates: []
-                };
+                stats.certificatesByEvent[cert.eventId] = { eventTitle: event ? event.title : 'Unknown Event', count: 0, certificates: [] };
             }
             stats.certificatesByEvent[cert.eventId].count++;
             stats.certificatesByEvent[cert.eventId].certificates.push(cert);
-        });
 
-        // Group by template
-        certificates.forEach(cert => {
             const template = cert.templateName || 'professional';
-            if (!stats.certificatesByTemplate[template]) {
-                stats.certificatesByTemplate[template] = 0;
-            }
+            if (!stats.certificatesByTemplate[template]) stats.certificatesByTemplate[template] = 0;
             stats.certificatesByTemplate[template]++;
         });
 
@@ -416,11 +378,10 @@ class CertificateGenerator {
     }
 }
 
-// Initialize certificate generator
+// Initialize
 const certificateGenerator = new CertificateGenerator();
 
-// Export for use in other files
+// Export for Node or other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { CertificateGenerator, CertificateTemplates };
 }
-
